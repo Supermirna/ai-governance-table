@@ -1,0 +1,239 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Singapore AI Governance: DeepSeek, Copilot, Vincent AI</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <style>
+        .modal { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.5); justify-content: center; align-items: center; }
+        .modal-content { background: white; padding: 20px; border-radius: 8px; width: 80%; max-width: 600px; }
+        .principle-green { background-color: #d1fae5; }
+        .principle-yellow { background-color: #fef9c3; }
+        .principle-red { background-color: #fee2e2; }
+        .principle-gray { background-color: #e5e7eb; }
+    </style>
+</head>
+<body class="bg-gray-100 p-6">
+    <div class="max-w-6xl mx-auto">
+        <h1 class="text-2xl font-bold mb-4">Singapore AI Governance: DeepSeek, Copilot, Vincent AI</h1>
+
+        <!-- Form for Editing AI Model Data -->
+        <div class="bg-white p-6 rounded-lg shadow-md mb-6">
+            <h2 class="text-xl font-semibold mb-4">Edit AI Model Data for Singapore</h2>
+            <form id="aiModelForm" class="space-y-4">
+                <div>
+                    <label for="model" class="block text-sm font-medium">AI Model</label>
+                    <select id="model" class="w-full p-2 border rounded" required>
+                        <option value="DeepSeek">DeepSeek</option>
+                        <option value="Microsoft Copilot">Microsoft Copilot</option>
+                        <option value="Vincent AI">Vincent AI</option>
+                    </select>
+                </div>
+                <div>
+                    <label for="summary" class="block text-sm font-medium">Summary of AI Governance</label>
+                    <textarea id="summary" class="w-full p-2 border rounded" rows="4" required></textarea>
+                </div>
+                <div>
+                    <label for="summaryColor" class="block text-sm font-medium">Summary Color</label>
+                    <select id="summaryColor" class="w-full p-2 border rounded" required>
+                        <option value="green">Green</option>
+                        <option value="yellow">Yellow</option>
+                        <option value="red">Red</option>
+                        <option value="gray">Gray</option>
+                    </select>
+                </div>
+                <div>
+                    <label for="accuracy" class="block text-sm font-medium">Accuracy (Source or leave blank if not covered)</label>
+                    <textarea id="accuracy" class="w-full p-2 border rounded" rows="2"></textarea>
+                </div>
+                <div>
+                    <label for="accuracyColor" class="block text-sm font-medium">Accuracy Color</label>
+                    <select id="accuracyColor" class="w-full p-2 border rounded" required>
+                        <option value="green">Green</option>
+                        <option value="yellow">Yellow</option>
+                        <option value="red">Red</option>
+                        <option value="gray">Gray</option>
+                    </select>
+                </div>
+                <div>
+                    <label for="hallucinations" class="block text-sm font-medium">Hallucinations (Source or leave blank if not covered)</label>
+                    <textarea id="hallucinations" class="w-full p-2 border rounded" rows="2"></textarea>
+                </div>
+                <div>
+                    <label for="hallucinationsColor" class="block text-sm font-medium">Hallucinations Color</label>
+                    <select id="hallucinationsColor" class="w-full p-2 border rounded" required>
+                        <option value="green">Green</option>
+                        <option value="yellow">Yellow</option>
+                        <option value="red">Red</option>
+                        <option value="gray">Gray</option>
+                    </select>
+                </div>
+                <button type="submit" class="bg-blue-500 text-white px-4 py-2 rounded hover:bg-blue-600">Submit</button>
+            </form>
+        </div>
+
+        <!-- Table -->
+        <div class="bg-white p-6 rounded-lg shadow-md">
+            <table id="aiModelTable" class="w-full border-collapse">
+                <tbody>
+                    <!-- Static Singapore Row -->
+                    <tr class="cursor-pointer hover:bg-gray-100">
+                        <td colspan="4" class="p-3 text-center font-bold" onclick="showSingaporeModal()">Singapore</td>
+                    </tr>
+                </tbody>
+                <thead>
+                    <tr class="bg-gray-200">
+                        <th class="p-3 text-left">AI Model</th>
+                        <th class="p-3 text-left">Accuracy</th>
+                        <th class="p-3 text-left">Hallucinations</th>
+                        <th class="p-3 text-left">Summary</th>
+                    </tr>
+                </thead>
+                <tbody id="tableBody"></tbody>
+            </table>
+        </div>
+
+        <!-- Modal for Details -->
+        <div id="modal" class="modal">
+            <div class="modal-content">
+                <h2 id="modalTitle" class="text-xl font-bold mb-4"></h2>
+                <h3 class="text-lg font-semibold">Summary</h3>
+                <p id="modalSummary" class="mb-4"></p>
+                <h3 id="principlesHeader" class="text-lg font-semibold">Principles</h3>
+                <ul id="modalPrinciples" class="list-disc pl-5"></ul>
+                <button onclick="closeModal()" class="mt-4 bg-red-500 text-white px-4 py-2 rounded hover:bg-red-600">Close</button>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Data for AI models
+        const aiModels = [
+            {
+                model: "DeepSeek",
+                summary: "Strengths: Comprehensive, concise, and well-organized. Addresses gaps in liability, cross-border data, and generative AI effectively. Includes public debates, adding depth. Weaknesses: Slightly verbose in repeating ethical AI objectives; could be streamlined.",
+                summaryColor: "green",
+                accuracy: "Strengths: Highly accurate, covers PDPA (2024 amendments), Model AI Governance Framework (2023 update), AI Verify Foundation, and proposed AI Liability Framework. Detailed sector-specific guidelines (MAS, MOH, LTA) and recent trends (GPAI, OECD, AI Verify expansion). Weaknesses: Slightly misrepresents AI Verify Foundation as a 'not-for-profit' without noting government backing.",
+                accuracyColor: "green",
+                hallucinations: "No hallucinations. All claims (e.g., AI Liability Framework, PDPA amendments) are consistent and plausible.",
+                hallucinationsColor: "green"
+            },
+            {
+                model: "Microsoft Copilot",
+                summary: "Strengths: Concise (<800 words), well-structured with clear headings. Highlights gaps in no binding AI laws and cross-border issues, relevant for Ashurst. Weaknesses: Misses details on AI Liability Framework and enforcement mechanisms, limiting completeness.",
+                summaryColor: "yellow",
+                accuracy: "Strengths: Correctly identifies PDPA, Model AI Governance Framework, AI Verify, and roles of IMDA, PDPC, MAS, MOH. Mentions sector-specific rules (finance, healthcare, autonomous vehicles) and recent developments (Global AI Assurance Pilot, AI Safety Red Teaming Challenge). Weaknesses: Misses 2024 PDPA amendments and AI Liability Framework.",
+                accuracyColor: "green",
+                hallucinations: "Minor hallucination: AISI Network collaboration is speculative, not corroborated by other documents.",
+                hallucinationsColor: "yellow"
+            },
+            {
+                model: "Vincent AI",
+                summary: "Strengths: Clear, legal tone; relevant gaps in sector-specific rules, enforcement, and cross-border issues. Suitable for professionals. Weaknesses: Overly PDPA-focused, misses recent trends and sector details. Exceeds 800 words, reducing conciseness. Misses details on AI Liability Framework and enforcement mechanisms.",
+                summaryColor: "red",
+                accuracy: "Strengths: Accurately describes PDPA, PDPC’s role, and Model AI Governance Framework. Correct on principles-based approach and PDPC’s role. Weaknesses: Omits recent developments (AI Liability Framework, 2024 PDPA amendments, AI Verify expansion).",
+                accuracyColor: "yellow",
+                hallucinations: "No hallucinations. Claims align with known frameworks (PDPA, Model AI Governance Framework), with no speculative assertions.",
+                hallucinationsColor: "yellow"
+            }
+        ];
+
+        // Singapore data for static row
+        const singaporeData = {
+            summary: "No AI-specific regulation yet. AI ethics framework, privacy guidelines, toolkit, and regulatory sandbox available. Singapore focused on releasing practical toolkits and frameworks that businesses can easily implement at the operational level. In contrast to other countries that have taken a more 'chronological' or 'theoretical' approach to AI governance and safety, this is a very pragmatic and grounded approach. 'On AI and copyright, I find it interesting that Singapore's Copyright Act allows for training of an AI on an artist's artwork as a form of \"permitted use\" under the \"computational data analysis\" exemption. Parliament allowed for this back then when they wanted to allow AIs for image recognition to use images, but I don't think they anticipated generative AI.' - GART"
+        };
+
+        // Render table
+        function renderTable() {
+            const tableBody = document.getElementById('tableBody');
+            tableBody.innerHTML = '';
+            aiModels.forEach(data => {
+                const row = document.createElement('tr');
+                row.className = 'border-b cursor-pointer hover:bg-gray-100';
+                row.onclick = () => showModal(data);
+                row.innerHTML = `
+                    <td class="p-3">${data.model}</td>
+                    <td class="p-3 ${data.accuracyColor === 'green' ? 'principle-green' : data.accuracyColor === 'yellow' ? 'principle-yellow' : data.accuracyColor === 'red' ? 'principle-red' : 'principle-gray'}"></td>
+                    <td class="p-3 ${data.hallucinationsColor === 'green' ? 'principle-green' : data.hallucinationsColor === 'yellow' ? 'principle-yellow' : data.hallucinationsColor === 'red' ? 'principle-red' : 'principle-gray'}"></td>
+                    <td class="p-3 ${data.summaryColor === 'green' ? 'principle-green' : data.summaryColor === 'yellow' ? 'principle-yellow' : data.summaryColor === 'red' ? 'principle-red' : 'principle-gray'}"></td>
+                `;
+                tableBody.appendChild(row);
+            });
+        }
+
+        // Show modal for Singapore row
+        function showSingaporeModal() {
+            document.getElementById('modalTitle').textContent = 'Singapore';
+            document.getElementById('modalSummary').textContent = singaporeData.summary;
+            document.getElementById('principlesHeader').style.display = 'none';
+            document.getElementById('modalPrinciples').innerHTML = '';
+            document.getElementById('modal').style.display = 'flex';
+        }
+
+        // Show modal for AI model rows
+        function showModal(data) {
+            document.getElementById('modalTitle').textContent = data.model;
+            document.getElementById('modalSummary').textContent = data.summary;
+            document.getElementById('principlesHeader').style.display = 'block';
+            document.getElementById('modalPrinciples').innerHTML = `
+                <li><strong>Accuracy:</strong> ${data.accuracy || 'No coverage'}</li>
+                <li><strong>Hallucinations:</strong> ${data.hallucinations || 'No coverage'}</li>
+            `;
+            document.getElementById('modal').style.display = 'flex';
+        }
+
+        // Close modal
+        function closeModal() {
+            document.getElementById('modal').style.display = 'none';
+        }
+
+        // Populate form based on selected model
+        function populateForm() {
+            const selectedModel = document.getElementById('model').value;
+            const modelData = aiModels.find(m => m.model === selectedModel);
+            document.getElementById('summary').value = modelData.summary;
+            document.getElementById('summaryColor').value = modelData.summaryColor;
+            document.getElementById('accuracy').value = modelData.accuracy;
+            document.getElementById('accuracyColor').value = modelData.accuracyColor;
+            document.getElementById('hallucinations').value = modelData.hallucinations;
+            document.getElementById('hallucinationsColor').value = modelData.hallucinationsColor;
+        }
+
+        // Handle form submission
+        document.getElementById('aiModelForm').addEventListener('submit', (e) => {
+            e.preventDefault();
+            const model = document.getElementById('model').value;
+            const summary = document.getElementById('summary').value.trim();
+            const summaryColor = document.getElementById('summaryColor').value;
+            const accuracy = document.getElementById('accuracy').value.trim();
+            const accuracyColor = document.getElementById('accuracyColor').value;
+            const hallucinations = document.getElementById('hallucinations').value.trim();
+            const hallucinationsColor = document.getElementById('hallucinationsColor').value;
+
+            // Update model data
+            const modelIndex = aiModels.findIndex(m => m.model === model);
+            aiModels[modelIndex] = {
+                model,
+                summary,
+                summaryColor,
+                accuracy,
+                accuracyColor,
+                hallucinations,
+                hallucinationsColor
+            };
+
+            // Reset form and re-render table
+            document.getElementById('aiModelForm').reset();
+            renderTable();
+        });
+
+        // Update form when model selection changes
+        document.getElementById('model').addEventListener('change', populateForm);
+
+        // Initial render and form population
+        renderTable();
+        populateForm();
+    </script>
+</body>
+</html>
